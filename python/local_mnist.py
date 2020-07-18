@@ -1,3 +1,9 @@
+#Author : Sandip Pal
+#File : local_mnist
+#Purpose : Train a model with MNIST training sample
+#
+
+
 # Get the working directory path
 import tensorflow.compat.v2 as tf
 import tensorflow_datasets as tfds
