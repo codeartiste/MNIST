@@ -1,5 +1,7 @@
 import tensorflow.compat.v2 as tf
 import tensorflow_datasets as tfds
+import matplotlib.pyplot as plt
+import matplotlib.image as mpimg
 
 tfds.disable_progress_bar()
 tf.enable_v2_behavior()
@@ -44,7 +46,16 @@ model.compile(
 
 model.fit(
     ds_train,
-    epochs=6,
+    epochs=9,
     validation_data=ds_test,
 )
 
+imgmp = mpimg.imread('number.png')
+print(imgmp.shape)
+imgmp = 1 - imgmp
+
+pred = model.predict(imgmp.reshape(1, 28, 28, 1))
+print(imgmp)
+print(pred.argmax())
+plt.imshow(imgmp.reshape(28, 28) , cmap='Greys')
+plt.show()
