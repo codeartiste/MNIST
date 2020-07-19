@@ -11,8 +11,11 @@ import tensorflow_datasets as tfds
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 import numpy as np
-
 import os
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense, Conv2D, Dropout, Flatten, MaxPooling2D
+
+
 current_dir = os.getcwd()
 
 
@@ -30,12 +33,10 @@ def rgb2gray(rgb):
 
 
 
-imgmp = mpimg.imread('myhandwritennums/number.png')
-print(imgmp.shape)
-imgmp = 1 - imgmp
 
 
 
+#Not used
 def normalize_img(x):
     """Normalizes images: `uint8` -> `float32`."""
     return tf.cast(x, tf.float32) / 255.
@@ -61,27 +62,27 @@ plt.imshow(X_train_n[image_index] , cmap='Greys')
 print('=======================')
 plt.show()
 
-""""
+
 # define cnn model1
 def define_model1():
-    model = tf.keras.models.Sequential()
-    model.add(tf.keras.layers.Conv2D(32, (3, 3), activation='relu', kernel_initializer='he_uniform', input_shape=(28, 28, 1)))
-    model.add(tf.keras.layers.MaxPooling2D((2, 2)))
-    model.add(tf.keras.layers.Flatten())
-    model.add(tf.keras.layers.Dense(100, activation='relu', kernel_initializer='he_uniform'))
-    model.add(tf.keras.layers.Dense(10, activation='softmax'))
+    model = Sequential()
+    model.add(Conv2D(32, (3, 3), activation='relu', kernel_initializer='he_uniform', input_shape=(28, 28, 1)))
+    model.add(MaxPooling2D((2, 2)))
+    model.add(Flatten())
+    model.add(Dense(100, activation='relu', kernel_initializer='he_uniform'))
+    model.add(Dense(10, activation='softmax'))
     # compile model
-    opt = tf.keras.optimizers.SGD(lr=0.01, momentum=0.9)
+    opt = SGD(lr=0.01, momentum=0.9)
     model.compile(optimizer=opt, loss='categorical_crossentropy', metrics=['accuracy'])
     return model
 
-"""
+
 # define cnn model simple
 def define_model():
-    model = tf.keras.models.Sequential([
-      tf.keras.layers.Flatten(input_shape=(28, 28, 1)),
-      tf.keras.layers.Dense(128,activation='relu'),
-      tf.keras.layers.Dense(10, activation='softmax')
+    model = Sequential([
+      Flatten(input_shape=(28, 28, 1)),
+      Dense(128,activation='relu'),
+      Dense(10, activation='softmax')
     ])
 
     model.compile(
@@ -94,7 +95,6 @@ def define_model():
 
 model = define_model()
 
-
 model.fit(
     x=X_train_n,
     y=Y_train,
@@ -102,8 +102,9 @@ model.fit(
     validation_data=(X_test_n, Y_test),
 )
 
-
-
+imgmp = mpimg.imread('myhandwritennums/number.png')
+print(imgmp.shape)
+imgmp = 1 - imgmp  # Done to match black to white and vice versa with Keras db
 
 pred = model.predict(imgmp.reshape(1, 28, 28, 1))
 
