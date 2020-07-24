@@ -17,26 +17,16 @@ from tensorflow.keras.layers import Dense, Conv2D, Dropout, Flatten, MaxPooling2
 
 
 current_dir = os.getcwd()
-
-
-
 # Import mnist data stored in the following path: current directory -> mnist.npz
 
 from tensorflow.keras.datasets import mnist
 (X_train, Y_train), (X_test, Y_test) = mnist.load_data(path=current_dir+'/../db/mnist.npz')
 
+#Not used
 def rgb2gray(rgb):
     return np.dot(rgb[...,:3], [0.2989, 0.5870, 0.1140])
 
 
-
-
-
-
-
-
-
-#Not used
 def normalize_img(x):
     """Normalizes images: `uint8` -> `float32`."""
     return tf.cast(x, tf.float32) / 255.
@@ -53,9 +43,10 @@ print('Y_test:  '  + str(Y_test.shape))
 X_train_n = normalize_img(X_train)
 X_test_n = normalize_img(X_test)
 
+input_shape = (28, 28, 1)
 
-print('=======================')
-image_index = 56
+print('========Just A DEBUG Print===============')
+image_index = 239
 print(X_train_n[image_index])
 print(Y_train[image_index])
 plt.imshow(X_train_n[image_index] , cmap='Greys')
@@ -77,6 +68,20 @@ def define_model1():
     return model
 
 
+#define cnn model2
+def define_model2():
+    model = Sequential()
+    model.add(Conv2D(28, kernel_size=(3,3), input_shape=input_shape))
+    model.add(MaxPooling2D(pool_size=(2, 2)))
+    model.add(Flatten()) # Flattening the 2D arrays for fully connected layers
+    model.add(Dense(128, activation=tf.nn.relu))
+    model.add(Dropout(0.2))
+    model.add(Dense(10,activation=tf.nn.softmax))
+    model.compile(optimizer='adam',loss='sparse_categorical_crossentropy',
+                    metrics=['accuracy'])
+    return model
+
+
 # define cnn model simple
 def define_model():
     model = Sequential([
@@ -93,7 +98,7 @@ def define_model():
     return model
 
 
-model = define_model()
+model = define_model2()
 
 model.fit(
     x=X_train_n,
