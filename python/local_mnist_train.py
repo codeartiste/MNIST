@@ -114,6 +114,10 @@ X_train, Y_train, X_test, Y_test = load_dataset_and_normalize()
 
 model.fit( x=X_train, y=Y_train, epochs=7, batch_size=32, validation_data=(X_test, Y_test) )
 
+score = model.evaluate(X_test, Y_test)
+print('loss=', score[0])
+print('accuracy=', score[1])
+
 model.save('mnistmodel')
 
 
