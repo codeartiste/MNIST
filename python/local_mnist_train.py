@@ -47,7 +47,35 @@ def load_dataset_and_normalize():
     return trainX, trainY, testX, testY
 
 
-#define cnn model2
+'''
+define cnn model2
+Model Documentation
+Sequential CNN model
+Layer 1 : Conv 2D
+          filters = 28 , conv filter = 3x3
+Layer 2 : MaxPooling2D   2 x 2
+          Take the maximum of the 4 values in the 2x2 matrix
+        Example  224x224x 64 such output is reduced to 112x112x64
+Layer 3 : Flatten
+         Flattening here implies a matrix to be represented as a vector
+         for the next fully connected layer
+Layer 4: Dense  128   Activation = relu
+         A fully connected layer
+         units: Positive integer, dimensionality of the output space = 128
+         activation: Activation function to use. If you don't specify anything, no activation is applied . Here it is RELU . Rectified Linear Unit
+         A glorified name for an indicator function
+           if input > 0:
+               return input
+           else:
+               return 0
+Layer 5: Dropout THe rate of dropout is 20%. Intended result is removing overfitting
+         The Dropout layer randomly sets input units to 0 with a frequency of rate at each step
+         during training time, which helps prevent overfitting
+         In simple terms it is something like the human forgetfullness
+Layer 6: Dense 10. Last layer to output 0, 1 ... 9 
+
+
+'''
 def define_model2():
     model = Sequential()
     model.add(Conv2D(28, kernel_size=(3,3), input_shape=(28, 28, 1)))
@@ -105,8 +133,9 @@ def define_model5():
 
 
 
-model = define_model2()
+
 X_train, Y_train, X_test, Y_test = load_dataset_and_normalize()
+model = define_model2()
 
 #Y_train = to_categorical(Y_train);
 #Y_test  = to_categorical(Y_test);
