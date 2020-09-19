@@ -20,21 +20,28 @@ from tensorflow.keras.datasets import mnist
 from tensorflow.keras.utils import to_categorical
 
 
+# load  dataset
+def load_dataset_and_normalize():
+    current_dir = os.getcwd()
+    fashion_mnist = keras.datasets.fashion_mnist
+    # load dataset
+    (trainX, trainY), (testX, testY) = fashion_mnist.load_data()
+    # reshape dataset to have a single channel
+    trainX = trainX.reshape((trainX.shape[0], 28, 28, 1))
+    testX = testX.reshape((testX.shape[0], 28, 28, 1))
+    trainX = normalize_img(trainX)
+    testX = normalize_img(testX)
+    return trainX, trainY, testX, testY
+
+
 
 def define_model1():
 
-    '''
-    model = keras.Sequential([
-        keras.layers.Flatten(input_shape=(28, 28)),
-        keras.layers.Dense(128, activation='relu'),
-        keras.layers.Dense(10)
-    ])
-    '''
     model = Sequential()
     model.add(Flatten(input_shape=(28, 28))) # Flattening the 2D arrays for fully connected layers
     model.add(Dense(128, activation=tf.nn.relu))
     model.add(Dropout(0.2))
-    model.add(Dense(10,))
+    model.add(Dense(10))
     model.compile(optimizer='adam',
     loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
     metrics=['accuracy'])
@@ -53,6 +60,18 @@ def define_model2():
                     metrics=['accuracy'])
     return model
 
+# define a cnn model
+def define_model3():
+    model = Sequential()
+    model.add(Conv2D(32, (3, 3), activation='relu', kernel_initializer='he_uniform', input_shape=(28, 28, 1)))
+    model.add(MaxPooling2D((2, 2)))
+    model.add(Flatten())
+    model.add(Dense(100, activation='relu', kernel_initializer='he_uniform'))
+    model.add(Dense(10, activation='softmax'))
+    # compile model
+    opt = SGD(lr=0.01, momentum=0.9)
+    model.compile(optimizer=opt, loss='categorical_crossentropy', metrics=['accuracy'])
+    return model
 
 # Helper libraries
 import numpy as np
@@ -89,11 +108,7 @@ for i in range(25):
     plt.xlabel(class_names[train_labels[i]])
 plt.show()
 
-model = define_model1() ;
-
-
-
-
+model = define_model1();
 model.fit(train_images, train_labels, epochs=15)
 test_loss, test_acc = model.evaluate(test_images,  test_labels, verbose=2)
 
@@ -191,20 +206,8 @@ plt.show()
 
 print(np.argmax(predictions_single[0]))
 
+model.save('fmnistmodel')
 
-
-
-
-
-
-'''
-
-model.compile(optimizer='adam',loss='sparse_categorical_crossentropy',
-    metrics=['accuracy'])
-
-
-model.save('mnistmodel')
-'''
 
 
 
