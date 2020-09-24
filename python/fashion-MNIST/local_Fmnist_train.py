@@ -77,12 +77,24 @@ def define_model2():
                     metrics=['accuracy'])
     return model
 
-# define a cnn model
+
 def define_model3():
+    model = Sequential()
+    model.add(Conv2D(24,kernel_size= (5,5),padding='same',activation='relu',
+            input_shape=(28,28,1)))
+    model.add(MaxPooling2D())
+    model.add(Flatten())
+    model.add(Dense(256, activation='relu'))
+    model.add(Dense(10, activation='softmax'))
+    model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
+    return model
+
+# define a cnn model
+def define_model4():
     model = Sequential()
     model.add(Conv2D(32, (3, 3), activation='relu', kernel_initializer='he_uniform', input_shape=(28, 28, 1)))
     model.add(MaxPooling2D((2, 2)))
-    model.add(Flatten())
+    model.add(Flatten()) # Flattening the 2D arrays for fully connected layers
     model.add(Dense(100, activation='relu', kernel_initializer='he_uniform'))
     model.add(Dense(10, activation='softmax'))
     # compile model
@@ -106,14 +118,29 @@ print('\nTest accuracy:', test_acc)
 
 '''
 
-model = define_model2();
+modelnum = 3
+model = define_model3();
+if modelnum == 3 or modelnum == 4 :
+    Y_train = to_categorical(Y_train);
+    Y_test  = to_categorical(Y_test);
+    
+    
+model.summary()
 model.fit(X_train, Y_train, epochs=12)
 test_loss, test_acc = model.evaluate(X_test,  Y_test, verbose=2)
 print('\nTest accuracy:', test_acc)
 
 
 
-model.save('fmnistmodel')
+model.save('fmnistmodel') #TF model
+
+# Convert the model.
+converter = tf.lite.TFLiteConverter.from_keras_model(model)
+tflite_model = converter.convert()
+
+# Save the model.
+with open('model.tflite', 'wb') as f:
+  f.write(tflite_model)
 
 
 
