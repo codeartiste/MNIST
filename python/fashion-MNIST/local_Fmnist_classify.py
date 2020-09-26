@@ -150,6 +150,8 @@ for i in range(num_images):
 plt.tight_layout()
 plt.show()
 
+
+'''
 # Grab an image from the test dataset.
 img = X_test[11]
 
@@ -172,6 +174,17 @@ _ = plt.xticks(range(10), class_names, rotation=45)
 plt.show()
 
 print(np.argmax(predictions_single[0]))
+'''
+
+imgmp = mpimg.imread('randomimages/shirt1.png')
+print(imgmp.shape)
+imgmp = 1 - imgmp  # Done to match black to white and vice versa with Keras db
+imgmp = imgmp.reshape(1, 28, 28, 1)
+pred = model.predict(imgmp)
+print(pred.argmax())
+plt.imshow(imgmp.reshape(28, 28) , cmap='Greys')
+plt.xlabel(class_names[pred.argmax()])
+plt.show()
 
 
 
